@@ -1,14 +1,23 @@
 const express = require('express');
-const {connectDb} = require('./helpers/db')
-const {host, port, db} = require('./configs/index')
-
+const {connectDb} = require('./helpers/db');
+const {host, port, db} = require('./configs/index');
+const mongoose = require('mongoose');
 
 const app = express();
+
+const postSchema = new mongoose.Schema({
+    name: String
+})
+
+const Post = mongoose.model("Post", postSchema)
 
 const startServer = () => {
     app.listen(port, () => {
         console.log(`Server running on the ${host}:${port}`);
-        console.log(`Database is ${db}`)
+        console.log(`Database is ${db}`);
+
+        const silence = new Post({name: 'Silence'})
+        console.log(silence.name)
     });
 };
 
