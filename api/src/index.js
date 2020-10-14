@@ -29,7 +29,7 @@ const startServer = () => {
             if (err) {
                 return console.error(err);
             }
-            console.log('savedPost', savedPost)
+            console.log('savedPost silence with volumes', savedPost)
         });
     });
 };
