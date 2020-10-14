@@ -2,3 +2,16 @@ version: "3.8"
 services:
   api:
     build: ./api
+    command: npm run start
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=http://localhost
+      - MONGO_URL=mongodb://api_db:27017/api
+    depends_on:
+      - api_db
+
+  api_db:
+    image: mongo:latest

@@ -1,12 +1,22 @@
 const express = require('express');
-const port = process.env.POPT ?? 8000;
+const {connectDb} = require('./helpers/db')
+const {host, port, db} = require('./configs/index')
+
 
 const app = express();
+
+const startServer = () => {
+    app.listen(port, () => {
+        console.log(`Server running on the ${host}:${port}`);
+        console.log(`Database is ${db}`)
+    });
+};
 
 app.get('/test', (req, res) => {
     res.send('Our api server is working correctly');
 });
 
-app.listen(port, () => {
-    console.log(`Server running on the http://localhost:${port}`);
-});
+connectDb()
+    .on('error', console.log)
+    .on('disconnect', connectDb)
+    .once('open', startServer);
