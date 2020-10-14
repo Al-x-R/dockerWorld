@@ -6,18 +6,31 @@ const mongoose = require('mongoose');
 const app = express();
 
 const postSchema = new mongoose.Schema({
-    name: String
-})
+    name: String,
+});
 
-const Post = mongoose.model("Post", postSchema)
+const Post = mongoose.model("Post", postSchema);
 
 const startServer = () => {
     app.listen(port, () => {
         console.log(`Server running on the ${host}:${port}`);
         console.log(`Database is ${db}`);
 
-        const silence = new Post({name: 'Silence'})
-        console.log(silence.name)
+        // Post.find((err, posts) => {
+        //     if (err) {
+        //         return console.error(err)
+        //     }
+        //     console.log('posts: ', posts)
+        // })
+
+        const silence = new Post({name: 'Silence'});
+        console.log(silence.name);
+        silence.save((err, savedPost) => {
+            if (err) {
+                return console.error(err);
+            }
+            console.log('savedPost', savedPost)
+        });
     });
 };
 
