@@ -4,9 +4,9 @@ services:
     build: ./frontend
     container_name: dockerworld-frontend
     command: serve -s build -l 3000
-#    ports:
-#    - "3000:3000"
     restart: unless-stopped
+    networks:
+      - dockerworld-network
 
 
   api:
@@ -23,6 +23,8 @@ services:
       - AUTH_API_URL=http://auth:3005/api
     depends_on:
       - api_db
+    networks:
+      - dockerworld-network
 
   auth:
     build: ./auth
@@ -38,18 +40,24 @@ services:
       - API_URL=http://api:8000/api
     depends_on:
       - auth_db
+    networks:
+      - dockerworld-network
 
   api_db:
     image: mongo:latest
     container_name: dockerworld-api-db
     volumes:
     - mongodb_api:/data/db
+    networks:
+      - dockerworld-network
 
   auth_db:
     image: mongo:latest
     container_name: dockerworld-auth-db
     volumes:
     - mongodb_auth:/data/db
+    networks:
+      - dockerworld-network
 
   nginx:
     image: nginx:stable-alpine
@@ -60,8 +68,14 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - frontend
+    networks:
+      - dockerworld-network
 
 
 volumes:
   mongodb_api:
   mongodb_auth:
+
+networks:
+  dockerworld-network:
+    driver: bridge
