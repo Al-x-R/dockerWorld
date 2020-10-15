@@ -2,7 +2,7 @@ const express = require('express');
 const {connectDb} = require('./helpers/db');
 const {host, port, db, authApiUrl} = require('./configs/index');
 const mongoose = require('mongoose');
-const axios = require('axios')
+const axios = require('axios');
 
 const app = express();
 
@@ -30,7 +30,7 @@ const startServer = () => {
             if (err) {
                 return console.error(err);
             }
-            console.log('savedPost silence with volumes', savedPost)
+            console.log('savedPost silence with volumes', savedPost);
         });
     });
 };
@@ -39,15 +39,21 @@ app.get('/test', (req, res) => {
     res.send('Our api server is working correctly');
 });
 
+app.get('/api/testapidata', (req, res) => {
+    res.json({
+        testWithApi: true,
+    });
+});
+
 app.get('/testcurrentuser', (req, res) => {
     axios.get(authApiUrl + '/currentUser').then(response => {
         res.json({
             testcurrentuser: true,
-            currentUserFromAuth: response.data
-        })
-    })
+            currentUserFromAuth: response.data,
+        });
+    });
 
-})
+});
 
 connectDb()
     .on('error', console.log)
