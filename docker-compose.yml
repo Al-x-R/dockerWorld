@@ -1,9 +1,12 @@
 version: "3.8"
+
 services:
   frontend:
-    build: ./frontend
+    build:
+      dockerfile: Dockerfile.prod
+      context: ./frontend
     container_name: dockerworld-frontend
-    command: serve -s build -l 3000
+#    command: serve -s build -l 3000
     restart: unless-stopped
     networks:
       - dockerworld-network
@@ -14,11 +17,10 @@ services:
     container_name: dockerworld-api
     command: npm run start
     restart: unless-stopped
-    ports:
-      - "8000:8000"
+#    ports:
+#      - "8000:8000"
     environment:
       - PORT=8000
-      - HOST=http://localhost
       - MONGO_URL=mongodb://api_db:27017/api
       - AUTH_API_URL=http://auth:3005/api
     depends_on:
@@ -31,11 +33,10 @@ services:
     container_name: dockerworld-auth
     command: npm run start
     restart: unless-stopped
-    ports:
-    - "3005:3005"
+#    ports:
+#    - "3005:3005"
     environment:
       - PORT=3005
-      - HOST=http://localhost
       - MONGO_URL=mongodb://auth_db:27017/auth
       - API_URL=http://api:8000/api
     depends_on:
@@ -47,7 +48,7 @@ services:
     image: mongo:latest
     container_name: dockerworld-api-db
     volumes:
-    - mongodb_api:/data/db
+      - mongodb_api:/data/db
     networks:
       - dockerworld-network
 
@@ -68,6 +69,8 @@ services:
       - ./nginx/nginx.conf.prod:/etc/nginx/conf.d/nginx.conf
     depends_on:
       - frontend
+      - api
+      - auth
     networks:
       - dockerworld-network
 
